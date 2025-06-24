@@ -16,7 +16,7 @@ import rewardCentral.RewardCentral;
 import com.openclassrooms.tourguide.helper.InternalTestHelper;
 import com.openclassrooms.tourguide.service.RewardsService;
 import com.openclassrooms.tourguide.service.TourGuideService;
-import com.openclassrooms.tourguide.user.User;
+import com.openclassrooms.tourguide.model.User;
 import tripPricer.Provider;
 
 public class TestTourGuideService {
@@ -109,7 +109,7 @@ public class TestTourGuideService {
 
 		assertEquals(5, attractions.size());
 	}
-
+	@Test
 	public void getTripDeals() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
