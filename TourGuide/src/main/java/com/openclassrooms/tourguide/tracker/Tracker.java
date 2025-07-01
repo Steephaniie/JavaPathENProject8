@@ -26,7 +26,7 @@ public class Tracker extends Thread {
 	}
 
 	/**
-	 * Assures to shut down the Tracker thread
+	 * Assure l'arrêt du thread Tracker
 	 */
 	public void stopTracking() {
 		stop = true;

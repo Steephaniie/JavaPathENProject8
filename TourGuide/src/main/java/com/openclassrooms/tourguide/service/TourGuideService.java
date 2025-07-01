@@ -30,6 +30,10 @@ import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
+/**
+ * Service principal de l'application TourGuide qui gère les utilisateurs,
+ * leurs localisations et les récompenses associées aux attractions visitées.
+ */
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
@@ -47,7 +51,7 @@ public class TourGuideService {
 
 		if (testMode) {
 			logger.info("TestMode enabled");
-			logger.debug("Initializing users");
+			logger.info("Initializing users");
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
@@ -55,30 +59,65 @@ public class TourGuideService {
 		addShutDownHook();
 	}
 
+	/**
+	 * Récupère la liste des récompenses d'un utilisateur.
+	 *
+	 * @param user L'utilisateur dont on veut récupérer les récompenses
+	 * @return La liste des récompenses de l'utilisateur
+	 */
 	public List<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
 
+	/**
+	 * Obtient la dernière localisation d'un utilisateur ou le localise s'il n'a pas d'historique.
+	 *
+	 * @param user L'utilisateur dont on veut connaître la position
+	 * @return La dernière localisation visitée par l'utilisateur
+	 */
 	public VisitedLocation getUserLocation(User user) {
-		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ? user.getLastVisitedLocation()
-				: trackUserLocation(user);
-		return visitedLocation;
+		if(user.getVisitedLocations().isEmpty())
+			return trackUserLocation(user);
+		else
+			return user.getLastVisitedLocation();
 	}
 
+	/**
+	 * Récupère un utilisateur par son nom d'utilisateur.
+	 *
+	 * @param userName Le nom d'utilisateur recherché
+	 * @return L'utilisateur correspondant au nom d'utilisateur
+	 */
 	public User getUser(String userName) {
 		return internalUserMap.get(userName);
 	}
 
+	/**
+	 * Récupère la liste de tous les utilisateurs.
+	 *
+	 * @return La liste de tous les utilisateurs
+	 */
 	public List<User> getAllUsers() {
 		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
 
+	/**
+	 * Ajoute un nouvel utilisateur s'il n'existe pas déjà.
+	 *
+	 * @param user L'utilisateur à ajouter
+	 */
 	public void addUser(User user) {
 		if (!internalUserMap.containsKey(user.getUserName())) {
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}
 
+	/**
+	 * Obtient les offres de voyage pour un utilisateur en fonction de ses points de récompense.
+	 *
+	 * @param user L'utilisateur pour lequel on recherche des offres
+	 * @return La liste des offres de voyage disponibles
+	 */
 	public List<Provider> getTripDeals(User user) {
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(),
@@ -88,6 +127,13 @@ public class TourGuideService {
 		return providers;
 	}
 
+
+	/**
+	 * Suit la localisation d'un utilisateur et calcule ses récompenses.
+	 *
+	 * @param user L'utilisateur à localiser
+	 * @return La localisation actuelle de l'utilisateur
+	 */
 	public VisitedLocation trackUserLocation(User user) {
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
@@ -95,6 +141,12 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
+	/**
+	 * Trouve les attractions à proximité d'une localisation donnée.
+	 *
+	 * @param visitedLocation La localisation à partir de laquelle chercher les attractions
+	 * @return La liste des attractions à proximité
+	 */
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
 		for (Attraction attraction : gpsUtil.getAttractions()) {
@@ -106,6 +158,9 @@ public class TourGuideService {
 		return nearbyAttractions;
 	}
 
+	/**
+	 * Ajoute un hook d'arrêt pour stopper le suivi lors de la fermeture de l'application.
+	 */
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
@@ -124,6 +179,9 @@ public class TourGuideService {
 	// internal users are provided and stored in memory
 	private final Map<String, User> internalUserMap = new HashMap<>();
 
+	/**
+	 * Initialise les utilisateurs internes pour les tests.
+	 */
 	private void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
@@ -137,6 +195,11 @@ public class TourGuideService {
 		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
 	}
 
+	/**
+	 * Génère un historique de localisation aléatoire pour un utilisateur.
+	 *
+	 * @param user L'utilisateur pour lequel générer l'historique
+	 */
 	private void generateUserLocationHistory(User user) {
 		IntStream.range(0, 3).forEach(i -> {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(),
@@ -144,18 +207,33 @@ public class TourGuideService {
 		});
 	}
 
+	/**
+	 * Génère une longitude aléatoire entre -180 et 180 degrés.
+	 *
+	 * @return Une longitude aléatoire
+	 */
 	private double generateRandomLongitude() {
 		double leftLimit = -180;
 		double rightLimit = 180;
 		return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
 	}
 
+	/**
+	 * Génère une latitude aléatoire entre -85.05112878 et 85.05112878 degrés.
+	 *
+	 * @return Une latitude aléatoire
+	 */
 	private double generateRandomLatitude() {
 		double leftLimit = -85.05112878;
 		double rightLimit = 85.05112878;
 		return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
 	}
 
+	/**
+	 * Génère une date aléatoire dans les 30 derniers jours.
+	 *
+	 * @return Une date aléatoire
+	 */
 	private Date getRandomTime() {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));

@@ -22,36 +22,36 @@ import com.openclassrooms.tourguide.model.User;
 
 public class TestPerformance {
 
-	/*
-	 * A note on performance improvements:
-	 * 
-	 * The number of users generated for the high volume tests can be easily
-	 * adjusted via this method:
-	 * 
+	/**
+	 * Note sur les améliorations de performance :
+	 *
+	 * Le nombre d'utilisateurs générés pour les tests à haut volume peut être
+	 * facilement ajusté via cette méthode :
+	 *
 	 * InternalTestHelper.setInternalUserNumber(100000);
-	 * 
-	 * 
-	 * These tests can be modified to suit new solutions, just as long as the
-	 * performance metrics at the end of the tests remains consistent.
-	 * 
-	 * These are performance metrics that we are trying to hit:
-	 * 
-	 * highVolumeTrackLocation: 100,000 users within 15 minutes:
+	 *
+	 *
+	 * Ces tests peuvent être modifiés pour s'adapter aux nouvelles solutions,
+	 * tant que les métriques de performance à la fin des tests restent cohérentes.
+	 *
+	 * Voici les métriques de performance que nous essayons d'atteindre :
+	 *
+	 * highVolumeTrackLocation : 100 000 utilisateurs en moins de 15 minutes :
 	 * assertTrue(TimeUnit.MINUTES.toSeconds(15) >=
 	 * TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 *
-	 * highVolumeGetRewards: 100,000 users within 20 minutes:
+	 * highVolumeGetRewards : 100 000 utilisateurs en moins de 20 minutes :
 	 * assertTrue(TimeUnit.MINUTES.toSeconds(20) >=
 	 * TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
-	 */
+	 **/
 
 	@Disabled
 	@Test
 	public void highVolumeTrackLocation() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		// Users should be incremented up to 100,000, and test finishes within 15
-		// minutes
+		// Le nombre d'utilisateurs doit être augmenté jusqu'à 100 000, et le test
+		// doit se terminer en moins de 15 minutes
 		InternalTestHelper.setInternalUserNumber(100);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
@@ -77,8 +77,8 @@ public class TestPerformance {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
-		// Users should be incremented up to 100,000, and test finishes within 20
-		// minutes
+		// Le nombre d'utilisateurs doit être augmenté jusqu'à 100 000, et le test
+		// doit se terminer en moins de 20 minutes
 		InternalTestHelper.setInternalUserNumber(100);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
