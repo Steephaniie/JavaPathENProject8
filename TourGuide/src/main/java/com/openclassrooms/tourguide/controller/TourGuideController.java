@@ -2,6 +2,7 @@ package com.openclassrooms.tourguide.controller;
 
 import java.util.List;
 
+import com.openclassrooms.tourguide.dto.NearbyAttractionsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,9 +43,9 @@ public class TourGuideController {
     // Les points de récompense pour la visite de chaque Attraction.
     //    Note : Les points de récompense des attractions peuvent être récupérés depuis RewardsCentral
     @RequestMapping("/getNearbyAttractions") 
-    public List<Attraction> getNearbyAttractions(@RequestParam String userName) {
+    public NearbyAttractionsDTO getNearbyAttractions(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-    	return tourGuideService.getNearByAttractions(visitedLocation);
+    	return tourGuideService.getNearByAttractions(visitedLocation,getUser(userName));
     }
     
     @RequestMapping("/getRewards") 
