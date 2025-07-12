@@ -6,7 +6,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.openclassrooms.tourguide" level="DEBUG"/>
+    <logger name="com.openclassrooms.tourguide" level="INFO"/>
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
     </root>

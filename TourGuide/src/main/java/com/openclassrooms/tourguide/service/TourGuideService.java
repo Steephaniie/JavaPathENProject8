@@ -20,6 +20,9 @@ import tripPricer.TripPricer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -123,6 +126,31 @@ public class TourGuideService {
         return providers;
     }
 
+    public void trackUserLocation(List<User> users) {
+        List<Attraction> attractions = gpsUtil.getAttractions();
+        List<CompletableFuture<VisitedLocation>> futures = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(5000);
+        try {
+            for (User user : users) {
+                CompletableFuture<VisitedLocation> completableFuture = CompletableFuture.supplyAsync(() -> {
+                    if (user.isTrackUserLocationEnCours()) return user.getLastVisitedLocation();
+                    user.startTrackUserLocation();
+                    try {
+                        return trackUserLocation(user, attractions);
+                    } finally {
+                        user.stopTrackUserLocation();
+                    }
+                },executor);
+                futures.add(completableFuture);
+            }
+            // Attendre que tous les futures du lot soient terminés
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+            logger.info("trackUserLocation - Lot de {} utilisateurs traité avec succès", users.size());
+        } finally {
+            // Arrêter proprement l'executor
+            executor.shutdown();
+        }
+    }
 
     /**
      * Suit la localisation d'un utilisateur et calcule ses récompenses.
@@ -131,18 +159,24 @@ public class TourGuideService {
      * @return La localisation actuelle de l'utilisateur
      */
     public VisitedLocation trackUserLocation(User user) {
+        List<Attraction> attractions = gpsUtil.getAttractions();
+        return trackUserLocation(user, attractions);
+    }
+
+    private VisitedLocation trackUserLocation(User user, List<Attraction> attractions) {
         VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
         user.addToVisitedLocations(visitedLocation);
-        rewardsService.calculateRewards(user);
+        rewardsService.calculateRewards(user, attractions);
         return visitedLocation;
     }
+
 
     /**
      * Trouve et renvoie les 5 attractions les plus proches d'une localisation donnée.
      * Pour chaque attraction, calcule la distance et les points de récompense associés.
      *
      * @param visitedLocation La localisation à partir de laquelle chercher les attractions
-     * @param user L'utilisateur pour lequel calculer les points de récompense
+     * @param user            L'utilisateur pour lequel calculer les points de récompense
      * @return Un objet DTO contenant la position de l'utilisateur et les 5 attractions les plus proches avec leurs détails
      */
     public NearbyAttractionsDTO getNearByAttractions(VisitedLocation visitedLocation, User user) {
@@ -176,7 +210,7 @@ public class TourGuideService {
             attractionUserDTO.setLatitude(attraction.latitude);
             attractionUserDTO.setLongitude(attraction.longitude);
             attractionUserDTO.setDistance(attraction.distance);
-            attractionUserDTO.setRewardPoints(rewardsService.getRewardPoints(attraction,user));
+            attractionUserDTO.setRewardPoints(rewardsService.getRewardPoints(attraction, user));
             attractionUserDTOs.add(attractionUserDTO);
         }
 
