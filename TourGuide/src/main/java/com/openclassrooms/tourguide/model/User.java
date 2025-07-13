@@ -1,4 +1,4 @@
-package com.openclassrooms.tourguide.user;
+package com.openclassrooms.tourguide.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,13 +18,36 @@ public class User {
 	private List<UserReward> userRewards = new ArrayList<>();
 	private UserPreferences userPreferences = new UserPreferences();
 	private List<Provider> tripDeals = new ArrayList<>();
+	private boolean calculateRewardEnCours=false;
+	private boolean trackUserLocationEnCours=false;
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
 		this.userId = userId;
 		this.userName = userName;
 		this.phoneNumber = phoneNumber;
 		this.emailAddress = emailAddress;
 	}
-	
+
+	public boolean isCalculateRewardEnCours() {
+		return calculateRewardEnCours;
+	}
+
+	public void startCalculateReward() {
+		this.calculateRewardEnCours = true;
+	}
+	public void stopCalculateReward() {
+		this.calculateRewardEnCours = false;
+	}
+	public boolean isTrackUserLocationEnCours() {
+		return trackUserLocationEnCours;
+	}
+
+	public void startTrackUserLocation() {
+		this.trackUserLocationEnCours = true;
+	}
+	public void stopTrackUserLocation() {
+		this.trackUserLocationEnCours = false;
+	}
+
 	public UUID getUserId() {
 		return userId;
 	}
@@ -70,7 +93,7 @@ public class User {
 	}
 	
 	public void addUserReward(UserReward userReward) {
-		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
+		if(userRewards.stream().filter(r -> r.attraction.attractionName.equals(userReward.attraction.attractionName)).count() == 0) {
 			userRewards.add(userReward);
 		}
 	}

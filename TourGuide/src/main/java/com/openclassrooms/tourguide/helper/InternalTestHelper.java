@@ -2,7 +2,7 @@ package com.openclassrooms.tourguide.helper;
 
 public class InternalTestHelper {
 
-	// Set this default up to 100,000 for testing
+	// Définir cette valeur par défaut jusqu'à 100 000 pour les tests
 	private static int internalUserNumber = 100;
 	
 	public static void setInternalUserNumber(int internalUserNumber) {
