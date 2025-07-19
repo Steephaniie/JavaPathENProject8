@@ -20,8 +20,18 @@ import com.openclassrooms.tourguide.service.TourGuideService;
 import com.openclassrooms.tourguide.model.User;
 import com.openclassrooms.tourguide.model.UserReward;
 
+/**
+ * Classe de test pour le service RewardsService.
+ * Vérifie les fonctionnalités liées aux récompenses des utilisateurs
+ * et la proximité des attractions.
+ */
 public class TestRewardsService {
 
+	/**
+	 * Teste l'attribution des récompenses à un utilisateur.
+	 * Vérifie qu'une récompense est bien attribuée quand un utilisateur
+	 * visite une attraction.
+	 */
 	@Test
 	public void userGetRewards() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -39,6 +49,10 @@ public class TestRewardsService {
 		assertTrue(userRewards.size() == 1);
 	}
 
+	/**
+	 * Teste la méthode de vérification de proximité d'une attraction.
+	 * Vérifie si une attraction est considérée comme étant à proximité d'elle-même.
+	 */
 	@Test
 	public void isWithinAttractionProximity() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -48,6 +62,12 @@ public class TestRewardsService {
 	}
 
 //	@Disabled // Doit être corrigé - peut générer une ConcurrentModificationException
+
+	/**
+	 * Teste le calcul des récompenses pour toutes les attractions.
+	 * Configure une distance maximale pour s'assurer que toutes les attractions
+	 * sont considérées comme visitées.
+	 */
 	@Test
 	public void nearAllAttractions() {
 		GpsUtil gpsUtil = new GpsUtil();

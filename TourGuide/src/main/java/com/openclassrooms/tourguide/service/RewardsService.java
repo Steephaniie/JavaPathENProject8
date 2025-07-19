@@ -15,13 +15,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+/**
+ * Service gérant le système de récompenses pour les utilisateurs.
+ * Ce service calcule les récompenses basées sur la proximité des attractions visitées.
+ */
 @Service
 public class RewardsService {
+    /**
+     * Facteur de conversion des miles nautiques en miles statutaires
+     */
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
     private Logger logger = LoggerFactory.getLogger(RewardsService.class);
-    // proximity in miles
+    /**
+     * Distance de proximité par défaut en miles
+     */
     private int defaultProximityBuffer = 10;
     private int proximityBuffer = defaultProximityBuffer;
+    /**
+     * Portée de proximité pour les attractions en miles
+     */
     private int attractionProximityRange = 200;
     private final GpsUtil gpsUtil;
     private final RewardCentral rewardsCentral;
@@ -31,14 +43,27 @@ public class RewardsService {
         this.rewardsCentral = rewardCentral;
     }
 
+    /**
+     * Définit la distance de proximité personnalisée.
+     *
+     * @param proximityBuffer Distance en miles
+     */
     public void setProximityBuffer(int proximityBuffer) {
         this.proximityBuffer = proximityBuffer;
     }
 
+    /**
+     * Réinitialise la distance de proximité à sa valeur par défaut.
+     */
     public void setDefaultProximityBuffer() {
         proximityBuffer = defaultProximityBuffer;
     }
 
+    /**
+     * Calcule les récompenses pour une liste d'utilisateurs de manière asynchrone.
+     *
+     * @param users Liste des utilisateurs pour lesquels calculer les récompenses
+     */
     public void calculateRewards(List<User> users) {
         List<Attraction> attractions = gpsUtil.getAttractions();
         List<CompletableFuture<Boolean>> futures = new ArrayList<>();
@@ -66,6 +91,11 @@ public class RewardsService {
         }
     }
 
+    /**
+     * Calcule les récompenses pour un utilisateur spécifique.
+     *
+     * @param user Utilisateur pour lequel calculer les récompenses
+     */
     public void calculateRewards(User user) {
         List<Attraction> attractions = gpsUtil.getAttractions();
         calculateRewards(user, attractions);
@@ -88,6 +118,13 @@ public class RewardsService {
         }
     }
 
+    /**
+     * Vérifie si une localisation est dans la zone de proximité d'une attraction.
+     *
+     * @param attraction L'attraction à vérifier
+     * @param location   La localisation à comparer
+     * @return true si la localisation est dans la zone de proximité
+     */
     public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
         return getDistance(attraction, location) > attractionProximityRange ? false : true;
     }
@@ -96,17 +133,24 @@ public class RewardsService {
         return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
     }
 
+    /**
+     * Récupère le nombre de points de récompense pour une attraction et un utilisateur.
+     *
+     * @param attraction L'attraction visitée
+     * @param user       L'utilisateur concerné
+     * @return Le nombre de points de récompense
+     */
     public int getRewardPoints(Attraction attraction, User user) {
         return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
     }
 
     /**
-     * Calculates the distance in statute miles between two geographical locations
-     * specified by their latitude and longitude.
+     * Calcule la distance en miles statutaires entre deux points géographiques
+     * spécifiés par leur latitude et longitude.
      *
-     * @param loc1 the first location containing latitude and longitude
-     * @param loc2 the second location containing latitude and longitude
-     * @return the distance between the two locations in statute miles
+     * @param loc1 première localisation avec latitude et longitude
+     * @param loc2 deuxième localisation avec latitude et longitude
+     * @return la distance entre les deux points en miles statutaires
      */
 
     public double getDistance(Location loc1, Location loc2) {

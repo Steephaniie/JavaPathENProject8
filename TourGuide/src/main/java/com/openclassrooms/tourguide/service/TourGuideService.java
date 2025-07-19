@@ -32,6 +32,10 @@ import java.util.stream.IntStream;
  * - Les attractions à proximité
  * - Les récompenses pour les attractions visitées
  * - Les offres de voyage personnalisées
+ *
+ * Ce service utilise GpsUtil pour la géolocalisation, RewardsService pour le calcul des récompenses,
+ * et TripPricer pour générer des offres de voyage. Il gère également un système de suivi
+ * automatique des utilisateurs via un Tracker.
  */
 @Service
 public class TourGuideService {
@@ -126,6 +130,13 @@ public class TourGuideService {
         return providers;
     }
 
+    /**
+     * Suit la localisation d'un groupe d'utilisateurs de manière asynchrone.
+     * Utilise un pool de threads pour traiter plusieurs utilisateurs en parallèle.
+     * Vérifie si un suivi est déjà en cours pour chaque utilisateur pour éviter les doublons.
+     *
+     * @param users La liste des utilisateurs à localiser
+     */
     public void trackUserLocation(List<User> users) {
         List<Attraction> attractions = gpsUtil.getAttractions();
         List<CompletableFuture<VisitedLocation>> futures = new ArrayList<>();
