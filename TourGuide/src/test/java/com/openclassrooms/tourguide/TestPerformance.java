@@ -19,6 +19,10 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Classe de test pour évaluer les performances de l'application TourGuide.
+ * Elle contient des tests de charge pour vérifier le comportement avec un grand nombre d'utilisateurs.
+ */
 public class TestPerformance {
 
     /**
@@ -44,7 +48,11 @@ public class TestPerformance {
      * TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
      **/
 
-//    @Disabled
+
+    /**
+     * Test de performance pour le suivi de la localisation d'un grand nombre d'utilisateurs.
+     * Objectif : Traiter 100 000 utilisateurs en moins de 15 minutes.
+     */
     @Test
     public void highVolumeTrackLocation() {
         GpsUtil gpsUtil = new GpsUtil();
@@ -67,7 +75,10 @@ public class TestPerformance {
         assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
     }
 
-//    @Disabled
+    /**
+     * Test de performance pour le calcul des récompenses d'un grand nombre d'utilisateurs.
+     * Objectif : Traiter 100 000 utilisateurs en moins de 20 minutes.
+     */
     @Test
     public void highVolumeGetRewards() {
         GpsUtil gpsUtil = new GpsUtil();

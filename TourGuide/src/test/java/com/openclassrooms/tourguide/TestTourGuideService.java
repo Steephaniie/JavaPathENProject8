@@ -18,8 +18,16 @@ import com.openclassrooms.tourguide.service.TourGuideService;
 import com.openclassrooms.tourguide.model.User;
 import tripPricer.Provider;
 
+/**
+ * Classe de tests pour le service TourGuide
+ * Cette classe vérifie les fonctionnalités principales du service touristique
+ */
 public class TestTourGuideService {
 
+	/**
+	 * Test la récupération de la localisation d'un utilisateur
+	 * Vérifie que l'ID de l'utilisateur correspond à celui de la localisation visitée
+	 */
 	@Test
 	public void getUserLocation() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -33,6 +41,10 @@ public class TestTourGuideService {
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
 	}
 
+	/**
+	 * Test l'ajout d'utilisateurs au service
+	 * Vérifie que les utilisateurs sont correctement ajoutés et peuvent être récupérés
+	 */
 	@Test
 	public void addUser() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -55,6 +67,10 @@ public class TestTourGuideService {
 		assertEquals(user2, retrivedUser2);
 	}
 
+	/**
+	 * Test la récupération de tous les utilisateurs
+	 * Vérifie que la liste retournée contient tous les utilisateurs ajoutés
+	 */
 	@Test
 	public void getAllUsers() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -76,6 +92,10 @@ public class TestTourGuideService {
 		assertTrue(allUsers.contains(user2));
 	}
 
+	/**
+	 * Test le suivi de la localisation d'un utilisateur
+	 * Vérifie que la localisation enregistrée correspond au bon utilisateur
+	 */
 	@Test
 	public void trackUser() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -91,6 +111,10 @@ public class TestTourGuideService {
 		assertEquals(user.getUserId(), visitedLocation.userId);
 	}
 
+	/**
+	 * Test la récupération des attractions à proximité
+	 * Vérifie que le nombre d'attractions retournées est correct (5)
+	 */
 	@Test
 	public void getNearbyAttractions() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -107,6 +131,11 @@ public class TestTourGuideService {
 
 		assertEquals(5, attractions.getAttractionUsersDTO().size());
 	}
+
+	/**
+	 * Test la récupération des offres de voyage
+	 * Vérifie que le nombre d'offres retournées est correct (5)
+	 */
 	@Test
 	public void getTripDeals() {
 		GpsUtil gpsUtil = new GpsUtil();
