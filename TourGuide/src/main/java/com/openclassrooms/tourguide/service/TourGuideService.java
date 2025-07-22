@@ -195,7 +195,8 @@ public class TourGuideService {
         Location loc1 = new Location(visitedLocation.location.latitude, visitedLocation.location.longitude);
         List<AttractionDistance> attractionDistances = new ArrayList<>();
 
-
+        // Pour chaque attraction, on calcule la distance entre l’utilisateur et l’attraction grâce à rewardsService.getDistance
+        // on stocke le resultat dans une liste: AttractionDistance
         for (Attraction attraction : gpsUtil.getAttractions()) {
             AttractionDistance attractionDistance = new AttractionDistance(attraction.attractionName,
                     attraction.city, attraction.state, attraction.latitude, attraction.longitude);
@@ -204,13 +205,13 @@ public class TourGuideService {
             attractionDistances.add(attractionDistance);
         }
 
-        // Trier par distance et limiter aux 5 plus proches
+        // on trie par distance et on limite aux 5 plus proches
         List<AttractionDistance> nearestFiveAttractions = attractionDistances.stream()
                 .sorted(Comparator.comparingDouble(AttractionDistance::getDistance))
                 .limit(5)
                 .toList();
 
-
+        // Création de la réponse avec enrichissement de l'objet.
         NearbyAttractionsDTO nearbyAttractionsDTO = new NearbyAttractionsDTO();
         nearbyAttractionsDTO.setLongitudeUser(visitedLocation.location.longitude);
         nearbyAttractionsDTO.setLatitudeUser(visitedLocation.location.latitude);

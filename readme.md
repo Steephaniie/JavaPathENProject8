@@ -1,5 +1,5 @@
 # TourGuide
-![img.png](img.png)
+![img.png](TourGuide/img.png)
 ##  Description
 TourGuide est une application Java Spring Boot permettant aux utilisateurs de planifier leurs voyages en accédant à des attractions touristiques proches et en recevant des offres partenaires. Le système repose sur deux services simulés : `gpsUtil` (géolocalisation) et `RewardCentral` (gestion des récompenses).
 
@@ -32,7 +32,7 @@ Cette version intègre des optimisations de performance, des corrections de bugs
 - mvn install:install-file -Dfile=/libs/TripPricer.jar -DgroupId=tripPricer -DartifactId=tripPricer -Dversion=1.0.0 -Dpackaging=jar
 
 # Cloner le dépôt
-$ git clone https://github.com/Steephaniie/JavaPathENProject8.git
+$ git clone https://github.com/Steephaniie/JavaPathENProject8
 $ cd JavaPathENProject8
 
 # Compiler le projet
@@ -44,12 +44,12 @@ $ mvn spring-boot:run
 L'application est accessible par défaut sur `http://localhost:8080`
 
 ## Endpoints REST
-| Méthode | Endpoint                | Description |
-|---------|-------------------------|-------------|
-| GET     | /getNearbyAttractions   | Renvoie les 5 attractions les plus proches |
-| GET     | /getRewards             | Renvoie les récompenses d’un utilisateur |
-| GET     | /getTripDeals           | Donne des suggestions de voyage et offres |
-| GET     | /getAllCurrentLocations | Coordonnées de tous les utilisateurs |
+| Méthode | Endpoint              | Description                                               |
+|---------|-----------------------|-----------------------------------------------------------|
+| GET     | /getNearbyAttractions | Renvoie les 5 attractions les plus proches                |
+| GET     | /getRewards           | Renvoie les récompenses d’un utilisateur                  |
+| GET     | /getTripDeals         | Donne des suggestions de voyage et offres                 |
+| GET     | /getLocations         | Retourne la dernière position GPS connue d'un utilisateur |
 
 
 ## Tests & Performance
@@ -60,7 +60,7 @@ L'application est accessible par défaut sur `http://localhost:8080`
 
 
 ## Intégration continue
-Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml` :
+Le pipeline GitHub Actions est défini dans `.github/workflows/maven.yml` :
 - Compilation Maven
 - Exécution des tests
 - Génération du jar exécutable
@@ -73,18 +73,7 @@ La documentation fonctionnelle et technique est fournie dans le dossier `/docs`,
 - Mesures de performance
 
 
-## Bonnes pratiques
-- Code commenté et structuré
-- Gestion des erreurs et logs centralisés
-- Tests automatisés et vérifiés
-
-
 ##  Auteure
 Stéphanie — Développeuse Java Back-End
 
-
-## Sécurité & API
-- Aucun stockage de données sensibles
-- Attention au niveau de logs en production
-- Vérification manuelle des accès utilisateur possible à intégrer
 
