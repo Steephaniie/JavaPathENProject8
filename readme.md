@@ -65,14 +65,6 @@ Le pipeline GitHub Actions est défini dans `.github/workflows/maven.yml` :
 - Exécution des tests
 - Génération du jar exécutable
 
-
-## Documentation
-La documentation fonctionnelle et technique est fournie dans le dossier `/docs`, incluant :
-- Cahier des charges
-- Schémas d'architecture
-- Mesures de performance
-
-
 ##  Auteure
 Stéphanie — Développeuse Java Back-End
 
